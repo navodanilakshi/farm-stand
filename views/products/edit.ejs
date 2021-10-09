@@ -1,0 +1,46 @@
+<% layout('./layouts/boilerplate') -%>
+    <div class="container mt-5">
+        <div class="row">
+            <h1>Update Product</h1>
+            <form action="/products/<%= product._id %>?_method=PATCH" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Product Name: </label>
+                    <input type="text" class="form-control" id="name" name="name" value="<%= product.name %>" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter product name.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Product Price: </label>
+                    <input type="text" class="form-control" id="price" name="price" value="<%= product.price %>"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter product price.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="category">Product Category: </label>
+                    <select class="form-select" name="category" id="category" required>
+
+                        <% for (const category of categories) { %>
+                            <option value="<%= category %>" <%=product.category===category?"selected":"" %>><%= category
+                                    %>
+                            </option>
+                            <% } %>
+                    </select>
+
+                </div>
+
+                <button class="btn btn-success">Update!</button>
+            </form>
+
+            <a href="/products/<%= product._id %>">Back</a>
+
+        </div>
+    </div>
