@@ -10,6 +10,10 @@
                     </h6>
                     <p class="card-text">Category: <%= product.category %>
                     </p>
+                    <p class="card-text">Farm: <a href="/farms/<%= product.farm._id %>">
+                            <%= product.farm.name %>
+                        </a>
+                    </p>
                     <a href="/products" class="card-link">All Products</a>
                     <a href="/products/<%= product._id %>/edit" class="card-link">Edit Product</a>
                     <form action="/products/<%= product._id %>?_method=DELETE" method="POST">

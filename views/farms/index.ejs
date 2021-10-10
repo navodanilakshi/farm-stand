@@ -1,16 +1,17 @@
 <% layout('./layouts/boilerplate') -%>
     <div class="container mt-5">
         <div class="row">
-            <h1>All Products!</h1>
+            <h1>All Farms!</h1>
             <ul>
-                <% for (const product of products) { %>
-                    <a href="/products/<%= product._id %>">
+                <% for (const farm of farms) { %>
+                    <a href="/farms/<%= farm._id %>">
                         <li>
-                            <%= product.name %>
+                            <%= farm.name %>
                         </li>
                     </a>
                     <% } %>
             </ul>
 
+            <a href="/farms/new">Add New Farm</a>
         </div>
     </div>

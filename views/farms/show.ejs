@@ -1,0 +1,42 @@
+<% layout('./layouts/boilerplate') -%>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="card" style="width: 30rem;">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= farm.name %>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">City: <%= farm.city %>
+                    </h6>
+
+                    <p class="card-text">Email: <%= farm.email %>
+                    </p>
+
+
+                    <h6>Products: </h6>
+                    <ul>
+                        <% for (const product of farm.products) { %>
+                            <a href="/products/<%= product._id %>">
+                                <li>
+                                    <%= product.name %>
+                                </li>
+                            </a>
+                            <% } %>
+                    </ul>
+                    <form action="/farms/<%= farm._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-danger">Delete</button>
+
+                    </form>
+
+                    <a href="/farms/<%= farm._id %>/products/new" class="card-link">Add Product</a>
+
+
+
+
+
+                </div>
+            </div>
+            <a href="/farms" class="card-link">All Farms</a>
+
+        </div>
+    </div>
