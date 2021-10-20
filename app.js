@@ -6,6 +6,8 @@ const methodOverride = require('method-override');
 const app = express();
 const ejsMate = require('ejs-mate');
 const AppError = require('./utils/AppError');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 const productRoutes = require('./routes/products');
 const farmRoutes = require('./routes/farms');
@@ -22,8 +24,24 @@ mongoose
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
+app.use(
+	session({
+		secret: 'thisissecret',
+		resave: false,
+		saveUninitialized: true
+	})
+);
+
+app.use(flash());
+
+app.use((req, res, next) => {
+	res.locals.success = req.flash('success');
+	res.locals.error = req.flash('error');
+	next();
+});
 app.use('/products', productRoutes);
 app.use('/farms', farmRoutes);
 

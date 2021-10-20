@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const Product = require('../models/product');
 const Farm = require('../models/farm');
 const catchAsync = require('../utils/catchAsync');
@@ -35,6 +35,7 @@ router.post(
 	catchAsync(async (req, res) => {
 		const farm = new Farm(req.body);
 		await farm.save();
+		req.flash('success', 'Successfully Created Farm!');
 		res.redirect('/farms');
 	})
 );
@@ -44,6 +45,10 @@ router.get(
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		const farm = await Farm.findById(id).populate([ { path: 'products', model: Product } ]);
+		if (!farm) {
+			req.flash('error', 'Cannot Find Farm!');
+			res.redirect('/farms');
+		}
 		res.render('farms/show', { farm });
 	})
 );
@@ -52,6 +57,10 @@ router.get(
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		const farm = await Farm.findById(id);
+		if (!farm) {
+			req.flash('error', 'Cannot Find Farm!');
+			res.redirect('/farms');
+		}
 		res.render('products/new', { farm, categories });
 	})
 );
@@ -66,6 +75,7 @@ router.post(
 		farm.products.push(product);
 		await product.save();
 		await farm.save();
+		req.flash('success', 'Successfully Created Product!');
 		res.redirect(`/farms/${farm.id}`);
 	})
 );

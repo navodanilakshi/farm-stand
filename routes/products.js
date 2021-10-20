@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const Product = require('../models/product');
 const Farm = require('../models/farm');
 const catchAsync = require('../utils/catchAsync');
@@ -34,6 +34,7 @@ router.get(
 	catchAsync(async (req, res, next) => {
 		const { id } = req.params;
 		const product = await Product.findById(id).populate([ { path: 'farm', model: Farm } ]);
+
 		if (!product) {
 			throw new AppError('Product not found', 404);
 		}
