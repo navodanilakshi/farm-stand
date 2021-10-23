@@ -8,9 +8,13 @@ const ejsMate = require('ejs-mate');
 const AppError = require('./utils/AppError');
 const session = require('express-session');
 const flash = require('connect-flash');
+const User = require('./models/user');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const productRoutes = require('./routes/products');
 const farmRoutes = require('./routes/farms');
+const userRoutes = require('./routes/users');
 mongoose
 	.connect('mongodb://localhost:27017/farmDemo', { useNewUrlParser: true, useUnifiedTopology: true })
 	.then(() => {
@@ -36,14 +40,29 @@ app.use(
 );
 
 app.use(flash());
+//From passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
 	res.locals.success = req.flash('success');
 	res.locals.error = req.flash('error');
 	next();
 });
+app.use('/', userRoutes);
 app.use('/products', productRoutes);
 app.use('/farms', farmRoutes);
+
+// app.get('/fakeuser', async (req, res) => {
+// 	const user = new User({ email: 'navoda@gmail.com', username: 'navoda' });
+// 	const newUser = await User.register(user, 'waffles');
+// 	res.send(newUser);
+// });
 
 app.all('*', (req, res, next) => {
 	throw new AppError('Page not found', 404);
