@@ -5,6 +5,7 @@ const Farm = require('../models/farm');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const { farmSchema } = require('../schemas');
+const { isLoggedIn } = require('../middleware');
 const validateFarm = (req, res, next) => {
 	const { name, city, email } = req.body;
 	const { error } = farmSchema.validate({ name, city, email });
@@ -25,12 +26,13 @@ router.get(
 	})
 );
 
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
 	res.render('farms/new');
 });
 
 router.post(
 	'/',
+	isLoggedIn,
 	validateFarm,
 	catchAsync(async (req, res) => {
 		const farm = new Farm(req.body);
@@ -54,6 +56,7 @@ router.get(
 );
 router.get(
 	'/:id/products/new',
+	isLoggedIn,
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		const farm = await Farm.findById(id);
@@ -67,6 +70,7 @@ router.get(
 
 router.post(
 	'/:id/products',
+	isLoggedIn,
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		const farm = await Farm.findById(id);
@@ -81,6 +85,7 @@ router.post(
 );
 router.delete(
 	'/:id',
+	isLoggedIn,
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		await Farm.findByIdAndDelete(id);

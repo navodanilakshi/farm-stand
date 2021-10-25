@@ -28,16 +28,17 @@ mongoose
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(methodOverride('_method'));
 app.use(
 	session({
 		secret: 'thisissecret',
 		resave: false,
-		saveUninitialized: true
+		saveUninitialized: true,
+		cookie: { secure: false }
 	})
 );
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
 
 app.use(flash());
 //From passport
@@ -52,6 +53,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
 	res.locals.success = req.flash('success');
 	res.locals.error = req.flash('error');
+	res.locals.currentUser = req.user;
 	next();
 });
 app.use('/', userRoutes);
@@ -60,7 +62,7 @@ app.use('/farms', farmRoutes);
 
 // app.get('/fakeuser', async (req, res) => {
 // 	const user = new User({ email: 'navoda@gmail.com', username: 'navoda' });
-// 	const newUser = await User.register(user, 'waffles');
+//
 // 	res.send(newUser);
 // });
 

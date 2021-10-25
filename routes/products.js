@@ -5,6 +5,7 @@ const Farm = require('../models/farm');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const { productSchema } = require('../schemas');
+const { isLoggedIn } = require('../middleware');
 const validateProduct = (req, res, next) => {
 	const { name, price, category } = req.body;
 	const { error } = productSchema.validate({ name, price, category });
@@ -20,12 +21,13 @@ const categories = [ 'fruit', 'vegetable', 'dairy' ];
 
 router.get(
 	'/',
+	isLoggedIn,
 	catchAsync(async (req, res) => {
 		const products = await Product.find({});
 		res.render('products/index', { products });
 	})
 );
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
 	res.render('products/new');
 });
 
@@ -44,6 +46,7 @@ router.get(
 
 router.get(
 	'/:id/edit',
+	isLoggedIn,
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		const product = await Product.findById(id);
@@ -55,6 +58,7 @@ router.get(
 );
 router.patch(
 	'/:id',
+	isLoggedIn,
 	validateProduct,
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
@@ -65,6 +69,7 @@ router.patch(
 );
 router.delete(
 	'/:id',
+	isLoggedIn,
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		await Product.findByIdAndDelete(id);
